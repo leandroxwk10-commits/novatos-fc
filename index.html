@@ -203,7 +203,7 @@
 <script>
 // ─── CONFIGURAÇÃO ───────────────────────────────────────────────
 // Cole aqui a URL do seu Google Apps Script depois de publicar
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwneMok_7gwgRQc_m3KM6keEipE45NbZB_ivIc45dZIO2W12inmOezmKDIZymm_hgW1/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqIKdkdmZJVuPHQglT4lioUqtV5gkZ-8tBMhPcE1e1NFZ9NxN4obqjgvM-sr1C-FEm/exec';
 // ────────────────────────────────────────────────────────────────
 
 const sabadosFixos = [
@@ -248,14 +248,20 @@ const sabadosFixos = [
 let dataSelecionada = null;
 let ocupadas = [];
 
-async function carregarOcupadas() {
-  if (!SCRIPT_URL || SCRIPT_URL.includes('COLE_AQUI')) return;
-  try {
-    const r = await fetch(SCRIPT_URL + '?action=listar');
-    const d = await r.json();
+function carregarOcupadas() {
+  if (!SCRIPT_URL || SCRIPT_URL.includes('COLE_AQUI')) { renderDatas(); return; }
+  window._jsonpCallback = function(d) {
     ocupadas = d.ocupadas || [];
-  } catch(e) {}
-  renderDatas();
+    renderDatas();
+    delete window._jsonpCallback;
+    const s = document.getElementById('_jsonp_script');
+    if (s) s.remove();
+  };
+  const script = document.createElement('script');
+  script.id = '_jsonp_script';
+  script.src = SCRIPT_URL + '?action=listar&callback=_jsonpCallback';
+  script.onerror = function() { renderDatas(); };
+  document.head.appendChild(script);
 }
 
 function renderDatas() {
