@@ -260,7 +260,7 @@ function carregarOcupadas() {
   };
   const script = document.createElement('script');
   script.id = '_jsonp_script';
-  script.src = SCRIPT_URL + '?action=listar&callback=_jsonpCallback';
+  script.src = SCRIPT_URL + '?action=listar&callback=_jsonpCallback&t=' + Date.now();
   script.onerror = function() { renderDatas(); };
   document.head.appendChild(script);
 }
