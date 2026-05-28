@@ -273,6 +273,7 @@ function renderDatas() {
     const ocupadaObj = ocupadas.find ? ocupadas.find(o => (typeof o === 'object' ? o.data : o) === s.data) : null;
     const estaOcupada = !!ocupadaObj || ocupadas.includes(s.data);
     const nomeAdversario = ocupadaObj && typeof ocupadaObj === 'object' && ocupadaObj.time ? ocupadaObj.time : '';
+    const horarioJogo = ocupadaObj && typeof ocupadaObj === 'object' && ocupadaObj.horario ? ocupadaObj.horario : '';
     if (s.mes !== mesAtual) {
       mesAtual = s.mes;
       const mh = document.createElement('div');
@@ -288,7 +289,7 @@ function renderDatas() {
       <div class="slot-data">${s.data}</div>
       <div class="slot-info">
         <div class="slot-nome">Novatos x ${estaOcupada ? (nomeAdversario || 'não disponível') : 'disponível'}</div>
-        <div class="slot-detalhe">Sábado · 07h–09h · visitantes</div>
+        <div class="slot-detalhe">${estaOcupada && horarioJogo ? "Sábado · " + horarioJogo + "h · visitantes" : "Sábado · 07h–09h · visitantes"}</div>
       </div>
       <span class="slot-badge ${estaOcupada ? 'ocupado' : 'livre'}">${estaOcupada ? 'ocupado' : 'livre'}</span>
     `;
