@@ -270,7 +270,9 @@ function renderDatas() {
   c.innerHTML = '';
   let mesAtual = '';
   sabadosFixos.forEach(s => {
-    const estaOcupada = ocupadas.includes(s.data);
+    const ocupadaObj = ocupadas.find ? ocupadas.find(o => (typeof o === 'object' ? o.data : o) === s.data) : null;
+    const estaOcupada = !!ocupadaObj || ocupadas.includes(s.data);
+    const nomeAdversario = ocupadaObj && typeof ocupadaObj === 'object' && ocupadaObj.time ? ocupadaObj.time : '';
     if (s.mes !== mesAtual) {
       mesAtual = s.mes;
       const mh = document.createElement('div');
@@ -285,7 +287,7 @@ function renderDatas() {
       <div class="radio"><div class="radio-dot"></div></div>
       <div class="slot-data">${s.data}</div>
       <div class="slot-info">
-        <div class="slot-nome">Novatos x ${estaOcupada ? 'não disponível' : 'disponível'}</div>
+        <div class="slot-nome">Novatos x ${estaOcupada ? (nomeAdversario || 'não disponível') : 'disponível'}</div>
         <div class="slot-detalhe">Sábado · 07h–09h · visitantes</div>
       </div>
       <span class="slot-badge ${estaOcupada ? 'ocupado' : 'livre'}">${estaOcupada ? 'ocupado' : 'livre'}</span>
@@ -378,8 +380,14 @@ function reiniciar() {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-renderDatas();
-carregarOcupadas();
+if (!sessionStorage.getItem("reloaded")) {
+  sessionStorage.setItem("reloaded", "1");
+  location.reload(true);
+} else {
+  sessionStorage.removeItem("reloaded");
+  renderDatas();
+  carregarOcupadas();
+}
 </script>
 </body>
 </html>
